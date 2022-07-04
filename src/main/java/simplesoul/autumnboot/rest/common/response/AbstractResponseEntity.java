@@ -5,8 +5,7 @@ package simplesoul.autumnboot.rest.common.response;
  *
  * @author AC
  */
-public sealed class AbstractResponseEntity permits
-        ResponseEntity,
-        ResponseEntity.Done,
-        ResponseEntity.Exceptional {
+sealed class AbstractResponseEntity permits
+        AbstractSuccessResponse,
+        AbstractFailureResponse {
 }
