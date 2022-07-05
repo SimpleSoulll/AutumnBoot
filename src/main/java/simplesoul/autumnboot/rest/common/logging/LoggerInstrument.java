@@ -34,7 +34,8 @@ public class LoggerInstrument {
     /**
      * 向{@link org.slf4j.Logger}实现类的所有error方法插入{@link ErrorCounter#increment()}逻辑
      * 向{@link org.slf4j.Logger}实现类的所有warn方法插入{@link WarningCounter#increment()}逻辑
-     * @apiNote 增加JVM选项 -ea --add-opens java.base/java.lang=ALL-UNNAMED -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+     *
+     * @apiNote 增加JVM选项 --add-opens java.base/java.lang=ALL-UNNAMED -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
      */
     public static void achieveCounters() {
         var cp = ClassPool.getDefault();
@@ -42,8 +43,7 @@ public class LoggerInstrument {
             var loggerClass = cp.getCtClass(log.getClass().getCanonicalName());
             Arrays.stream(loggerClass.getDeclaredMethods(ERROR_METHOD_NAME)).forEach(errorMethod -> {
                 try {
-                    errorMethod.insertBefore("""
-                            simplesoul.autumnboot.rest.common.logging.ErrorCounter.increment();""");
+                    errorMethod.insertBefore(ERROR_COUNTER_INCREMENT_METHOD);
                 } catch (CannotCompileException ex) {
                     log.error(String.format("向%s插入错误日志计数器失败", loggerClass.getName()), ex);
                 }
