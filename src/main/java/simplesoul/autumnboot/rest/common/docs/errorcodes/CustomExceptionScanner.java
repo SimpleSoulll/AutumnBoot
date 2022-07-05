@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.util.ReflectionUtils;
 import simplesoul.autumnboot.rest.common.exception.AbstractCustomException;
-import simplesoul.autumnboot.rest.service.health.HealthCheckException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +32,7 @@ public final class CustomExceptionScanner {
      */
     @Lazy
     public static final List<Class<? extends AbstractCustomException>> CUSTOM_EXCEPTION_IMPLS =
-        List.copyOf(new Reflections(getRootPackage()).getSubTypesOf(AbstractCustomException.class));
+            List.copyOf(new Reflections(getRootPackage()).getSubTypesOf(AbstractCustomException.class));
 
     private static String getRootPackage() {
         return Arrays.stream(CustomExceptionScanner.class.getCanonicalName().split("\\.")).findFirst().orElse("");
@@ -58,13 +56,9 @@ public final class CustomExceptionScanner {
                 }).filter(entry -> entry.getKey() > 0)
                 .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, Collectors.toSet())).entrySet()
                 .stream().map(entry ->
-                        new ErrorCodeConflict(entry.getKey(), entry.getValue()
-                                .stream().map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toSet())))
-                .filter(ecf -> ecf.conflicts.size() > 1).collect(Collectors.toSet());
-
-    }
-
-    @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
-    public record ErrorCodeConflict(Integer errorCode, Set<String> conflicts) {
+                        new ErrorCodeConflict(entry.getKey(), entry.getValue().stream()
+                                .map(AbstractMap.SimpleImmutableEntry::getValue).collect(Collectors.toSet())))
+                .filter(ecf -> ecf.conflicts().size() > 1)
+                .collect(Collectors.toSet());
     }
 }

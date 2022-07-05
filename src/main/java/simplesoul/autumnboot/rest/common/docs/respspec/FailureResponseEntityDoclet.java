@@ -44,11 +44,6 @@ public class FailureResponseEntityDoclet implements Doclet {
     @Override
     public boolean run(DocletEnvironment environment) {
         // TODO 提取ResponseEntity的注释
-        System.out.println(environment.getSpecifiedElements().size());
-        environment.getIncludedElements().forEach(ele -> {
-            String comment = environment.getElementUtils().getDocComment(ele);
-            System.out.println(comment);
-        });
         return OK;
     }
 }
