@@ -7,7 +7,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import simplesoul.autumnboot.rest.common.docs.CustomExceptionScanner;
+import simplesoul.autumnboot.rest.common.docs.errorcodes.CustomExceptionScanner;
 import simplesoul.autumnboot.rest.common.exception.AbstractBusinessException;
 
 import java.util.concurrent.TimeUnit;
