@@ -7,7 +7,9 @@ import javassist.ClassPool;
 import javassist.NotFoundException;
 import javassist.util.HotSwapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -15,6 +17,7 @@ import java.util.Arrays;
  * @author AC
  */
 @Slf4j
+@Component
 public class LoggerInstrument {
 
     private static final String ERROR_METHOD_NAME = "error";
@@ -37,6 +40,7 @@ public class LoggerInstrument {
      *
      * @apiNote 增加JVM选项 --add-opens java.base/java.lang=ALL-UNNAMED -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
      */
+    @PostConstruct
     public static void achieveCounters() {
         var cp = ClassPool.getDefault();
         try {
@@ -60,5 +64,6 @@ public class LoggerInstrument {
         } catch (IllegalConnectorArgumentsException | NotFoundException | IOException | CannotCompileException ex) {
             log.error("插入日志监听器出错", ex);
         }
+        log.info("日志计数器已注入" + log.getClass().getCanonicalName());
     }
 }
