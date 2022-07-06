@@ -1,18 +1,34 @@
 package simplesoul.autumnboot.rest.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author AC
  */
 @AllArgsConstructor
+@Getter
 public class HealthStatus {
 
+    /**
+     * 服务状态|RUNNING
+     */
     private String state;
 
-    private int errors;
+    /**
+     * 服务描述|OK
+     */
+    private String info;
 
-    private int warnings;
+    /**
+     * 服务错误日志数量|0
+     */
+    private Integer errors;
+
+    /**
+     * 服务警告日志数据量|0
+     */
+    private Integer warnings;
 }

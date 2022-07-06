@@ -1,7 +1,5 @@
 package simplesoul.autumnboot.rest.common.health;
 
-import lombok.Getter;
-
 import java.util.Comparator;
 
 /**
@@ -38,4 +36,14 @@ public abstract class AbstractApplicationRuntimeEvent {
             return o1.getEventLevel() - o2.getEventLevel();
         }
     };
+
+    @Override
+    public int hashCode() {
+        return (getEventLevel() + getHealthStatus() + getEventDescription()).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof AbstractApplicationRuntimeEvent && hashCode() == obj.hashCode();
+    }
 }

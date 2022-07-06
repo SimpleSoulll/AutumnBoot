@@ -61,9 +61,9 @@ public class LoggerInstrument {
             });
             HotSwapper swapper = new HotSwapper(8000);
             swapper.reload(Logger.class.getCanonicalName(), loggerClass.toBytecode());
+            log.info("日志计数器已注入" + log.getClass().getCanonicalName());
         } catch (IllegalConnectorArgumentsException | NotFoundException | IOException | CannotCompileException ex) {
             log.error("插入日志监听器出错", ex);
         }
-        log.info("日志计数器已注入" + log.getClass().getCanonicalName());
     }
 }

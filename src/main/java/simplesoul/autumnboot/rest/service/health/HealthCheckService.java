@@ -1,6 +1,9 @@
 package simplesoul.autumnboot.rest.service.health;
 
 import org.springframework.stereotype.Service;
+import simplesoul.autumnboot.rest.common.health.ApplicationHealthStatusManager;
+import simplesoul.autumnboot.rest.common.logging.ErrorCounter;
+import simplesoul.autumnboot.rest.common.logging.WarningCounter;
 import simplesoul.autumnboot.rest.entity.HealthStatus;
 
 /**
@@ -9,7 +12,14 @@ import simplesoul.autumnboot.rest.entity.HealthStatus;
 @Service
 public class HealthCheckService {
 
+    /**
+     * 获取服务状态
+     *
+     * @return 服务状态
+     */
     public HealthStatus getHealthStatus() {
-        return new HealthStatus()
+        String status = ApplicationHealthStatusManager.getHealthStatus();
+        return new HealthStatus(status, ApplicationHealthStatusManager.getApplicationStatusInfo(),
+                ErrorCounter.getErrors(), WarningCounter.getWarnings());
     }
 }
