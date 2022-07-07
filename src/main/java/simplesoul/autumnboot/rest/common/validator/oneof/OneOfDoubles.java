@@ -12,14 +12,16 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = OneOfDoublesValidator.class)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.PARAMETER})
 public @interface OneOfDoubles {
 
     String message() default "";
 
-    double[] value();
+    double[] value() default {};
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    Class<? extends AbstractOneOfDynamicConstraintsProvider> dynamicsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
 }

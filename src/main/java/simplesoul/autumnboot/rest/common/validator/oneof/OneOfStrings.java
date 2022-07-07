@@ -18,7 +18,7 @@ public @interface OneOfStrings {
 
     String message() default "";
 
-    String[] value();
+    String[] value() default {};
 
     Class<?>[] groups() default {};
 
@@ -29,4 +29,5 @@ public @interface OneOfStrings {
      */
     boolean caseSensitive() default true;
 
+    Class<? extends AbstractOneOfDynamicConstraintsProvider> dynamicsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
 }

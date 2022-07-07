@@ -11,15 +11,17 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = OneOfIntsValidator.class)
+@Constraint(validatedBy = OneOfLongsValidator.class)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER})
 public @interface OneOfLongs {
 
     String message() default "";
 
-    int[] value();
+    long[] value() default {};
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    Class<? extends AbstractOneOfDynamicConstraintsProvider> dynamicsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
 }

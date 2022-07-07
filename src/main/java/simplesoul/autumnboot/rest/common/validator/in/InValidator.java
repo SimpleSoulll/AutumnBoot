@@ -1,8 +1,7 @@
-package simplesoul.autumnboot.rest.common.validator;
+package simplesoul.autumnboot.rest.common.validator.in;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * TODO 动态生成校验器
  */
 @SuppressWarnings("rawtypes")
-public class InEnumValidator implements ConstraintValidator<InEnum, Object> {
+public class InValidator implements ConstraintValidator<In, Object> {
 
     private Class<? extends Enum> enumClass;
 
@@ -33,7 +32,7 @@ public class InEnumValidator implements ConstraintValidator<InEnum, Object> {
     }
 
     @Override
-    public void initialize(InEnum constraintAnnotation) {
+    public void initialize(In constraintAnnotation) {
         this.enumClass = constraintAnnotation.value();
     }
 }

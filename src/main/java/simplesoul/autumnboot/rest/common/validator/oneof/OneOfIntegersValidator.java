@@ -9,5 +9,5 @@ import java.util.stream.Collectors;
  *
  * @author AC
  */
-public class OneOfDoublesValidator extends AbstractOneOfValidator<OneOfDoubles, Double> {
+public class OneOfIntegersValidator extends AbstractOneOfValidator<OneOfIntegers, Integer> {
 }
