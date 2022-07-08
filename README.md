@@ -9,4 +9,4 @@ At least jdk17
 
 - [link Maven适配不同JDK版本](tips/maven.md)
 
-记得删除`tips`
+D:\jdk\17\bin\javadoc -d docs/javadoc -encoding utf-8 -cp "target/classes;target/lib/*" -sourcepath src/main/java --enable-preview --release 17 -subpackages simplesoul.autumnboot

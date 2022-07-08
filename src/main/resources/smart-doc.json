@@ -1,0 +1,15 @@
+{
+  "outPath": "./docs/apidoc",
+  "allInOne": true,
+  "serverUrl": "http://{{server}}",
+  "showAuthor": false,
+  "revisionLogs": [
+    {
+      "version": "${VERSION}",
+      "revisionTime": "${REVERSION_TIME}",
+      "status": "update",
+      "author": "AC",
+      "remarks": "SpringBoot项目模板及工具类"
+    }
+  ]
+}
