@@ -29,5 +29,5 @@ public @interface OneOfStrings {
      */
     boolean caseSensitive() default true;
 
-    Class<? extends AbstractOneOfDynamicConstraintsProvider> dynamicsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
+    Class<? extends AbstractOneOfDynamicConstraintsProvider> constraintsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
 }

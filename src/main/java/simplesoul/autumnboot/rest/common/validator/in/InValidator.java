@@ -1,5 +1,7 @@
 package simplesoul.autumnboot.rest.common.validator.in;
 
+import simplesoul.autumnboot.rest.common.validator.AbstractConstraintsProvider;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
@@ -13,9 +15,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * TODO 动态生成校验器
  */
 @SuppressWarnings("rawtypes")
+@Deprecated
 public class InValidator implements ConstraintValidator<In, Object> {
 
-    private Class<? extends Enum> enumClass;
+    private Class<? extends Enum> enumConstraintsProvider;
+
+    private Class<? extends AbstractConstraintsProvider> constraintsProvider;
+
+    private boolean hasValidEnumConstraintsProvider;
+
+    private boolean hasValidConstraintsProvider;
 
     private static final Map<Class, List<Object>> ENUM_CONSTANTS = new ConcurrentHashMap<>();
 
@@ -33,6 +42,13 @@ public class InValidator implements ConstraintValidator<In, Object> {
 
     @Override
     public void initialize(In constraintAnnotation) {
-        this.enumClass = constraintAnnotation.value();
+        hasValidEnumConstraintsProvider = !constraintAnnotation.enumsProvider().getCanonicalName().equals(Enum.class.getCanonicalName());
+        hasValidConstraintsProvider = !constraintAnnotation.constraintsProvider().getCanonicalName().equals(AbstractConstraintsProvider.class.getCanonicalName());
+        if (hasValidConstraintsProvider) {
+            constraintsProvider = constraintAnnotation.constraintsProvider();
+        }
+        if (hasValidEnumConstraintsProvider) {
+            enumConstraintsProvider = constraintAnnotation.enumsProvider();
+        }
     }
 }

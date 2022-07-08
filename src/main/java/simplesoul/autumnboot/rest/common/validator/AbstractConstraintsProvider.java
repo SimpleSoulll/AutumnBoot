@@ -1,17 +1,17 @@
 package simplesoul.autumnboot.rest.common.validator;
 
 /**
- * 动态约束
+ * 向校验器提供约束的类
  *
  * @author AC
  */
-public abstract class AbstractDynamicConstraintsProvider<T> {
+public abstract class AbstractConstraintsProvider<T> {
 
     /**
-     * 获取动态约束/期望值
+     * 获取约束/期望值
      *
      * @param <T> 约束对象的类型
      * @return 约束值/期望值
      */
-    abstract public T getDynamicExpectations();
+    abstract public T getConstraints();
 }

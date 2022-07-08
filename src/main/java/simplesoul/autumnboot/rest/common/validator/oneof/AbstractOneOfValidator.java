@@ -1,6 +1,7 @@
 package simplesoul.autumnboot.rest.common.validator.oneof;
 
 import lombok.extern.slf4j.Slf4j;
+import simplesoul.autumnboot.rest.common.validator.ConstraintsProviderCache;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -56,8 +57,13 @@ public abstract class AbstractOneOfValidator<S extends Annotation, T> implements
             case double[] doubles -> Arrays.stream(doubles).boxed().map(v -> (T) v).collect(Collectors.toSet());
             case long[] longs -> Arrays.stream(longs).boxed().map(v -> (T) v).collect(Collectors.toSet());
             case String[] strings -> Arrays.stream(strings).map(v -> (T) v).collect(Collectors.toSet());
-            case default -> new HashSet<>();
+            case default -> handleUnsupportedNonPrimitiveConstraints();
         };
+    }
+
+    private Set<T> handleUnsupportedNonPrimitiveConstraints() {
+        log.error("OneOf不支持使用非原始类型作为约束集,建议使用In");
+        return new HashSet<>();
     }
 
     /**
@@ -66,18 +72,17 @@ public abstract class AbstractOneOfValidator<S extends Annotation, T> implements
      * @param constraintAnnotation 注解对象
      * @return 动态约束集提供类
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    private Optional<Class<? extends AbstractOneOfDynamicConstraintsProvider>> getDynamicExpectationProvider(S constraintAnnotation) {
-        Class<? extends AbstractOneOfDynamicConstraintsProvider> provider;
+    @SuppressWarnings("unchecked")
+    private Optional<Class<? extends AbstractOneOfDynamicConstraintsProvider<T>>> getDynamicConstraintsProvider(S constraintAnnotation) {
+        Class<? extends AbstractOneOfDynamicConstraintsProvider<T>> provider;
         try {
-            provider = (Class<? extends AbstractOneOfDynamicConstraintsProvider>)
-                    constraintAnnotation.annotationType().getDeclaredMethod("dynamicsProvider").invoke(constraintAnnotation);
+            provider = (Class<? extends AbstractOneOfDynamicConstraintsProvider<T>>)
+                    constraintAnnotation.annotationType().getDeclaredMethod("constraintsProvider").invoke(constraintAnnotation);
         } catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
             log.error("反射获取动态约束集提供类失败", ex);
             return Optional.empty();
         }
-        boolean hasDynamicExpectations = !provider.getCanonicalName().equals(AbstractOneOfDynamicConstraintsProvider.PROVIDER)
-                && provider.getSuperclass().getCanonicalName().equals(AbstractOneOfDynamicConstraintsProvider.PROVIDER);
+        boolean hasDynamicExpectations = !provider.getCanonicalName().equals(AbstractOneOfDynamicConstraintsProvider.PROVIDER);
         return hasDynamicExpectations ? Optional.of(provider) : Optional.empty();
     }
 
@@ -86,18 +91,12 @@ public abstract class AbstractOneOfValidator<S extends Annotation, T> implements
      *
      * @param provider 提供动态约束的类
      * @return Supplier
-     *
-     * TODO 使用反射工厂配和@Singleon注解
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private Supplier<Set<T>> getDynamicSupplier(Class<? extends AbstractOneOfDynamicConstraintsProvider> provider) {
+    private Supplier<Set<T>> getDynamicSupplier(Class<? extends AbstractOneOfDynamicConstraintsProvider<T>> provider) {
         try {
-            var providerConstructor = provider.getConstructor();
-            providerConstructor.setAccessible(true);
-            var constraintsProvider = (AbstractOneOfDynamicConstraintsProvider<T>) provider.getConstructor().newInstance();
-            return constraintsProvider::getDynamicExpectations;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException ex) {
+            var constraintsProvider = ConstraintsProviderCache.getConstraintsProvider(provider);
+            return constraintsProvider::getConstraints;
+        } catch (RuntimeException ex) {
             log.error("反射动态约束获取方法失败", ex);
             return HashSet::new;
         }
@@ -105,7 +104,7 @@ public abstract class AbstractOneOfValidator<S extends Annotation, T> implements
 
     @Override
     public void initialize(S constraintAnnotation) {
-        getDynamicExpectationProvider(constraintAnnotation).ifPresentOrElse(provider -> {
+        getDynamicConstraintsProvider(constraintAnnotation).ifPresentOrElse(provider -> {
             expectationSupplier = getDynamicSupplier(provider);
             hasDynamicExpectations = true;
         }, () -> expectations = extractExpectations(constraintAnnotation));

@@ -1,5 +1,7 @@
 package simplesoul.autumnboot.rest.common.validator.in;
 
+import simplesoul.autumnboot.rest.common.validator.AbstractConstraintsProvider;
+
 import javax.validation.Constraint;
 import java.lang.annotation.*;
 
@@ -13,7 +15,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = InValidator.class)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Deprecated
 public @interface In {
 
-    @SuppressWarnings("rawtypes") Class<? extends Enum> value();
+    Class<? extends AbstractConstraintsProvider> constraintsProvider() default AbstractConstraintsProvider.class;
+
+    Class<? extends Enum> enumsProvider() default Enum.class;
 }

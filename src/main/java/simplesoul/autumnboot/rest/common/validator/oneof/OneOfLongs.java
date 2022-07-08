@@ -23,5 +23,5 @@ public @interface OneOfLongs {
 
     Class<? extends Payload>[] payload() default {};
 
-    Class<? extends AbstractOneOfDynamicConstraintsProvider> dynamicsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
+    Class<? extends AbstractOneOfDynamicConstraintsProvider> constraintsProvider() default AbstractOneOfDynamicConstraintsProvider.class;
 }

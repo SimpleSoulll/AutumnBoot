@@ -16,4 +16,16 @@ public class Basic {
         System.out.println(content.matches(regex));
         System.out.println(pattern.matcher(content).find());
     }
+
+    @Test
+    void test2() {
+    }
+
+    private static abstract class A {
+
+    }
+
+    private static class B extends A {
+
+    }
 }

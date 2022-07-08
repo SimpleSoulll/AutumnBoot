@@ -5,19 +5,16 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * 校验对象是否在指定int数组中
- *
+ * 校验对象是否在指定对象数组中
  * @author AC
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = OneOfIntegersValidator.class)
+@Constraint(validatedBy = OneOfValidator.class)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER})
-public @interface OneOfIntegers {
+public @interface OneOf {
 
     String message() default "";
-
-    int[] value() default {};
 
     Class<?>[] groups() default {};
 

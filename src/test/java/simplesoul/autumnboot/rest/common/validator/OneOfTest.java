@@ -1,14 +1,17 @@
 package simplesoul.autumnboot.rest.common.validator;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import simplesoul.autumnboot.rest.common.validator.in.In;
 import simplesoul.autumnboot.rest.common.validator.oneof.AbstractOneOfDynamicConstraintsProvider;
+import simplesoul.autumnboot.rest.common.validator.oneof.OneOf;
 import simplesoul.autumnboot.rest.common.validator.oneof.OneOfIntegers;
 import simplesoul.autumnboot.rest.common.validator.oneof.OneOfStrings;
 
@@ -47,27 +50,35 @@ public class OneOfTest {
         var person = new DynamicPerson("icy", 31);
         var validateResult = validator.validate(person);
         Set<String> messages = validateResult.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        Assertions.assertEquals(2, messages.size());
+    }
+
+    @Test
+    @DisplayName("测试OneOf注解")
+    void oneOfTest() {
+        Programmer programmer = new Programmer("linux", new Language("ASM"));
+        var validateResult = validator.validate(programmer);
+        Set<String> messages = validateResult.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
         System.out.println(messages);
     }
 
-    private static class Weapon {
-        @In(Force.class)
-        Force force;
+    private static record Programmer(String name, @OneOf(constraintsProvider = MajorLanguage.class) Language language) {
     }
 
-    private enum Force {
+    @NoArgsConstructor
+    private static class MajorLanguage extends AbstractOneOfDynamicConstraintsProvider<Language> {
 
-        StrongNuclearForce("强核力"),
-        WeakNuclearForce("弱核力"),
-        ElectromagneticForce("电磁力"),
-        Gravity("引力");
-
-        @Getter
-        private final String name;
-
-        private Force(String name) {
-            this.name = name;
+        @Override
+        public Set<Language> getConstraints() {
+            return Set.of(new Language("C++"), new Language("Java"), new Language("C#"));
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class Language {
+
+        private String name;
     }
 
     private static record Person(
@@ -76,14 +87,14 @@ public class OneOfTest {
     }
 
     private static record DynamicPerson(
-            @OneOfStrings(dynamicsProvider = DynamicNameConstraintsProvider.class) String name,
-            @OneOfIntegers(dynamicsProvider = DynamicAgeConstraintsProvider.class) int age) {
+            @OneOfStrings(constraintsProvider = DynamicNameConstraintsProvider.class) String name,
+            @OneOfIntegers(constraintsProvider = DynamicAgeConstraintsProvider.class) int age) {
     }
 
     @NoArgsConstructor
     public static class DynamicNameConstraintsProvider extends AbstractOneOfDynamicConstraintsProvider<String> {
         @Override
-        public Set<String> getDynamicExpectations() {
+        public Set<String> getConstraints() {
             return Set.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         }
     }
@@ -91,9 +102,9 @@ public class OneOfTest {
     @NoArgsConstructor
     public static class DynamicAgeConstraintsProvider extends AbstractOneOfDynamicConstraintsProvider<Integer> {
         @Override
-        public Set<Integer> getDynamicExpectations() {
+        public Set<Integer> getConstraints() {
             Random random = new Random();
-            return Set.of(random.nextInt(30), random.nextInt(30));
+            return Set.of(random.nextInt(20), random.nextInt(10) + 20);
         }
     }
 }
