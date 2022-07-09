@@ -22,7 +22,8 @@ public class CustomExceptionScannerTest {
     @Test
     @DisplayName("测试错误码冲突校验")
     void getErrorCodeConflictsTest() {
-        var conflicts = CustomExceptionScanner.getErrorCodeConflicts();
+        var scanner = new CustomExceptionScanner(null);
+        var conflicts = scanner.getErrorCodeConflicts();
         Assertions.assertIterableEquals(
                 Set.of("simplesoul.autumnboot.rest.common.docs.errorcodes.CustomExceptionScannerTest.CustomException4Test",
                         "simplesoul.autumnboot.rest.service.health.HealthCheckException"),
@@ -30,12 +31,11 @@ public class CustomExceptionScannerTest {
                         .map(ErrorCodeConflict::conflicts).orElse(Collections.emptySet()));
     }
 
-    @SuppressWarnings("unused")
+    @ErrorCode(500123)
     private static class CustomException4Test extends AbstractCustomException {
-        private static final Integer ERR_CODE = 500123;
 
         public CustomException4Test(Throwable cause) {
-            super(ERR_CODE, cause);
+            super(cause);
         }
     }
 }

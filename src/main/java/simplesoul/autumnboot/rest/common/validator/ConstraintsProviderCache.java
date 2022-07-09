@@ -3,6 +3,8 @@ package simplesoul.autumnboot.rest.common.validator;
 import simplesoul.autumnboot.rest.common.reflection.CachedReflectionFactory;
 
 /**
+ * 缓存ConstraintsProvider对象
+ *
  * @author AC
  */
 public class ConstraintsProviderCache {

@@ -1,5 +1,6 @@
 package simplesoul.autumnboot.rest.common.logging;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class LoggerInstrumentTest {
         LoggerInstrument.achieveCounters();
         logger.error("test error log counter");
         logger.warn("test warn log counter");
-        System.out.println(ErrorCounter.getErrors());
-        System.out.println(WarningCounter.getWarnings());
+        Assertions.assertEquals(1, ErrorCounter.getErrors());
+        Assertions.assertEquals(1, WarningCounter.getWarnings());
     }
 }

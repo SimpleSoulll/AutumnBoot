@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,14 +33,14 @@ public class PrimeCache<K, V> {
         if (!cache.containsKey(key)) {
             synchronized (cache) {
                 if (!cache.containsKey(key)) {
-                    if (supplier != null) {
+                    if (Objects.nonNull(supplier)) {
                         cache.put(key, new WeakReference<>(supplier.apply(key)));
                     } else {
                         throw new RuntimeException("无法构建对象");
                     }
                 } else {
                     WeakReference<V> weakValue = cache.get(key);
-                    if (weakValue == null || weakValue.get() == null) {
+                    if (Objects.isNull(weakValue) || Objects.isNull(weakValue.get())) {
                         cache.put(key, new WeakReference<>(supplier.apply(key)));
                     }
                 }

@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import simplesoul.autumnboot.rest.common.docs.errorcodes.ErrorCode;
 
 import java.util.regex.Pattern;
 
@@ -18,7 +19,8 @@ public class Basic {
     }
 
     @Test
-    void test2() {
+    void test2() throws Exception {
+        Class.forName("simplesoul.autumnboot.rest.common.response.ResponseEntity$Fatal");
     }
 
     private static abstract class A {
@@ -26,6 +28,19 @@ public class Basic {
     }
 
     private static class B extends A {
+
+    }
+
+    abstract class C {
+
+        void getErrorCode() {
+            int value = getClass().getAnnotation(ErrorCode.class).value();
+            System.out.println(value);
+        }
+    }
+
+    @ErrorCode(12345)
+    class D extends C{
 
     }
 }

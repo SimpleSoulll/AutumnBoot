@@ -59,7 +59,6 @@ public class OneOfTest {
         Programmer programmer = new Programmer("linux", new Language("ASM"));
         var validateResult = validator.validate(programmer);
         Set<String> messages = validateResult.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
-        System.out.println(messages);
     }
 
     private static record Programmer(String name, @OneOf(constraintsProvider = MajorLanguage.class) Language language) {

@@ -1,16 +1,17 @@
 package simplesoul.autumnboot.rest.common.docs.errorcodes;
 
+import jdk.javadoc.doclet.DocletEnvironment;
+import net.steppschuh.markdowngenerator.MarkdownSerializationException;
+import net.steppschuh.markdowngenerator.list.UnorderedList;
+import net.steppschuh.markdowngenerator.table.Table;
+import net.steppschuh.markdowngenerator.text.emphasis.BoldText;
+import net.steppschuh.markdowngenerator.text.heading.Heading;
+import org.apache.commons.text.StringEscapeUtils;
 import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.util.ReflectionUtils;
 import simplesoul.autumnboot.rest.common.exception.AbstractCustomException;
 
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,41 +19,93 @@ import java.util.stream.Collectors;
  *
  * @author AC
  */
-public final class CustomExceptionScanner {
+public class CustomExceptionScanner {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CustomExceptionScanner.class);
+    private final DocletEnvironment environment;
+
+    public CustomExceptionScanner(DocletEnvironment environment) {
+        this.environment = environment;
+    }
 
     /**
-     * errorCode的默认字段名
+     * 获取错误码的Markdown文本
      */
-    private static final String DEFAULT_ERR_CODE_FIELD_NAME = "ERR_CODE";
+    public String markErrorCodesDown() throws MarkdownSerializationException {
+        var errorCodes = getErrorCodeDescriptions();
+        var doc = new StringBuilder();
+        doc.append(new Heading("错误码说明", 3).serialize()).append("\n");
+        Table.Builder errorCodeTable = new Table.Builder()
+                .addRow("错误码", "说明");
+        errorCodes.forEach(code -> errorCodeTable.addRow(code.getKey(), code.getValue()));
+        return doc.append(errorCodeTable.build().serialize()).append("\n").toString();
+    }
+
+    /**
+     * 获取冲突错误码Markdown文本
+     */
+    public String markErrorCodeConflictsDown() throws MarkdownSerializationException {
+        var errorCodeConflicts = getErrorCodeConflicts();
+        StringBuilder doc = new StringBuilder();
+        if (!errorCodeConflicts.isEmpty()) {
+            doc.append(new BoldText("冲突的错误码: ")).append("\n");
+            var messages = errorCodeConflicts.stream().map(ErrorCodeConflict::getConflictMessage).collect(Collectors.toList());
+            doc.append(new UnorderedList<>(messages).serialize()).append("\n");
+        }
+        return doc.toString();
+    }
+
+    /**
+     * 获取继承了{@link AbstractCustomException}的异常类的错误码及其注释
+     */
+    private List<AbstractMap.SimpleImmutableEntry<Integer, String>> getErrorCodeDescriptions() {
+        List<AbstractMap.SimpleImmutableEntry<Integer, String>> errorCodes = new LinkedList<>();
+        var docTrees = environment.getDocTrees();
+        var typeUtils = environment.getTypeUtils();
+        environment.getIncludedElements().forEach(element -> {
+            if (element.getKind().isClass()) {
+                if (typeUtils.directSupertypes(element.asType()).stream().anyMatch(typeMirror ->
+                        typeMirror.toString().equals(AbstractCustomException.class.getCanonicalName()))) {
+                    var errorCodeAnnotation = element.getAnnotation(ErrorCode.class);
+                    var errorCode = Objects.nonNull(errorCodeAnnotation) ? errorCodeAnnotation.value() : 0;
+                    var comment = StringEscapeUtils.unescapeJava(docTrees.getDocCommentTree(element).getFullBody().get(0).toString());
+                    errorCodes.add(new AbstractMap.SimpleImmutableEntry<>(errorCode, comment));
+                }
+            }
+        });
+        return errorCodes;
+    }
+
+    private int getErrorCodeFromAnnotation(Class<? extends AbstractCustomException> customException) {
+        var errorCodeAnnotation = customException.getAnnotation(ErrorCode.class);
+        return Objects.nonNull(errorCodeAnnotation) ? errorCodeAnnotation.value() : 0;
+    }
 
     /**
      * {@link AbstractCustomException}的所有实现类
      */
     @Lazy
-    public static final List<Class<? extends AbstractCustomException>> CUSTOM_EXCEPTION_IMPLS =
+    private static final List<Class<? extends AbstractCustomException>> CUSTOM_EXCEPTIONS =
             List.copyOf(new Reflections(getRootPackage()).getSubTypesOf(AbstractCustomException.class));
 
+    /**
+     * 获取package的根目录
+     *
+     * @return 根目录
+     */
     private static String getRootPackage() {
         return Arrays.stream(CustomExceptionScanner.class.getCanonicalName().split("\\.")).findFirst().orElse("");
     }
 
     /**
      * 获取错误码冲突的类
+     *
+     * @return 冲突的类及其错误码
      */
-    public static Set<ErrorCodeConflict> getErrorCodeConflicts() {
-        return CUSTOM_EXCEPTION_IMPLS.stream().map(impl -> {
-                    try {
-                        var errorCodeField = ReflectionUtils.findField(impl, DEFAULT_ERR_CODE_FIELD_NAME);
-                        assert errorCodeField != null;
-                        errorCodeField.setAccessible(true);
-                        int errorCode = (int) errorCodeField.get(null);
-                        return new AbstractMap.SimpleImmutableEntry<>(errorCode, impl.getCanonicalName());
-                    } catch (IllegalAccessException ex) {
-                        LOG.error(String.format("无法获取%s的错误码", ex));
-                        return new AbstractMap.SimpleImmutableEntry<>(0, impl.getCanonicalName());
-                    }
+    public Set<ErrorCodeConflict> getErrorCodeConflicts() {
+        return CUSTOM_EXCEPTIONS.stream().map(impl -> {
+                    var errorCodeAnnotation = impl.getAnnotation(ErrorCode.class);
+                    var errorCode = Objects.nonNull(errorCodeAnnotation) ? errorCodeAnnotation.value() : 0;
+                    return new AbstractMap.SimpleImmutableEntry<>(errorCode, impl.getCanonicalName());
                 }).filter(entry -> entry.getKey() > 0)
                 .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, Collectors.toSet())).entrySet()
                 .stream().map(entry ->

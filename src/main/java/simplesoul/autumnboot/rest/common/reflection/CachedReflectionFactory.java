@@ -3,6 +3,7 @@ package simplesoul.autumnboot.rest.common.reflection;
 import simplesoul.autumnboot.rest.common.cache.PrimeCache;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -42,6 +43,6 @@ public class CachedReflectionFactory<T> {
      * @return T的实例
      */
     public T getInstanceOf(Class<? extends T> tClass) {
-        return tClass.getAnnotation(Singleton.class) != null ? cache.getOrElseUpsert(tClass) : supplier.apply(tClass);
+        return Objects.nonNull(tClass.getAnnotation(Singleton.class)) ? cache.getOrElseUpsert(tClass) : supplier.apply(tClass);
     }
 }

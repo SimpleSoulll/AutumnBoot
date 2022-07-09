@@ -1,7 +1,9 @@
 package simplesoul.autumnboot.rest.common.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import simplesoul.autumnboot.rest.common.docs.errorcodes.ErrorCode;
+
+import java.util.Objects;
 
 /**
  * 自定义的服务内部异常
@@ -13,17 +15,25 @@ import lombok.Getter;
  *
  * @author AC
  */
-@AllArgsConstructor
 public class AbstractCustomException extends Exception {
 
     /**
      * 错误码
      */
-    @Getter()
-    private final Integer errorCode;
+    @Getter
+    private final Integer errorCode = getAnnotatedErrorCode();
 
-    public AbstractCustomException(int errorCode, Throwable cause) {
+    public AbstractCustomException(Throwable cause) {
         super(cause);
-        this.errorCode = errorCode;
+    }
+
+    /**
+     * 获取实现类的@{@link ErrorCode}注解指定的错误码
+     *
+     * @return 错误码
+     */
+    private int getAnnotatedErrorCode() {
+        var errorCodeAnnotation = getClass().getAnnotation(ErrorCode.class);
+        return Objects.nonNull(errorCodeAnnotation) ? errorCodeAnnotation.value() : 0;
     }
 }

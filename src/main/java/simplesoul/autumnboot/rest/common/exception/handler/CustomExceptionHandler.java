@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import simplesoul.autumnboot.rest.common.exception.AbstractCustomException;
 import simplesoul.autumnboot.rest.common.response.ResponseEntity;
 
+import java.util.Objects;
+
 /**
  * 处理自定义异常的拦截器
  * 打印错误日志并返回错误码
@@ -15,7 +17,7 @@ import simplesoul.autumnboot.rest.common.response.ResponseEntity;
 class CustomExceptionHandler {
 
     protected static <T extends AbstractCustomException> ResponseEntity.Failure handleCustomException(T customException) {
-        if (customException.getCause() != null) {
+        if (Objects.nonNull(customException.getCause())) {
             log.error(customException.getMessage(), customException);
         } else {
             log.error(customException.getMessage());
