@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import simplesoul.autumnboot.rest.common.docs.errorcodes.ErrorCode;
+import org.simplesoul.autumnboot.rest.common.docs.errorcodes.ErrorCode;
 
 import java.util.regex.Pattern;
 
@@ -20,7 +20,7 @@ public class Basic {
 
     @Test
     void test2() throws Exception {
-        Class.forName("simplesoul.autumnboot.rest.common.response.ResponseEntity$Fatal");
+        Class.forName("org.simplesoul.autumnboot.rest.common.response.ResponseEntity$Fatal");
     }
 
     private static abstract class A {
