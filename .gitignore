@@ -5,6 +5,9 @@ docs
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Gradle ###
+.gradle
+
 ### STS ###
 .apt_generated
 .classpath
