@@ -1,4 +1,4 @@
-package simplesoul.autumnboot.rest.common.validator;
+package org.simplesoul.autumnboot.rest.common.validator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import simplesoul.autumnboot.rest.common.validator.oneof.AbstractOneOfDynamicConstraintsProvider;
-import simplesoul.autumnboot.rest.common.validator.oneof.OneOf;
-import simplesoul.autumnboot.rest.common.validator.oneof.OneOfIntegers;
-import simplesoul.autumnboot.rest.common.validator.oneof.OneOfStrings;
+import org.simplesoul.autumnboot.rest.common.validator.oneof.AbstractOneOfDynamicConstraintsProvider;
+import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOf;
+import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOfIntegers;
+import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOfStrings;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;

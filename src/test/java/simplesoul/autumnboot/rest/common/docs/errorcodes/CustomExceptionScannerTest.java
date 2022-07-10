@@ -1,11 +1,11 @@
-package simplesoul.autumnboot.rest.common.docs.errorcodes;
+package org.simplesoul.autumnboot.rest.common.docs.errorcodes;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import simplesoul.autumnboot.rest.common.exception.AbstractCustomException;
+import org.simplesoul.autumnboot.rest.common.exception.AbstractCustomException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
