@@ -1,4 +1,4 @@
-package simplesoul.autumnboot.rest.common.reflection;
+package simplesoul.autumnboot.common.reflection;
 
 import java.lang.annotation.*;
 

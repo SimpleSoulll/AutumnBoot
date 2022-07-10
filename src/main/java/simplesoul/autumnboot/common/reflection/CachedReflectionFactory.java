@@ -1,6 +1,6 @@
-package simplesoul.autumnboot.rest.common.reflection;
+package simplesoul.autumnboot.common.reflection;
 
-import simplesoul.autumnboot.rest.common.cache.PrimeCache;
+import simplesoul.autumnboot.common.cache.PrimeCache;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;

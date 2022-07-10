@@ -2,8 +2,8 @@ package simplesoul.autumnboot.rest.service.health;
 
 import org.springframework.stereotype.Service;
 import simplesoul.autumnboot.rest.common.health.ApplicationHealthStatusManager;
-import simplesoul.autumnboot.rest.common.logging.ErrorCounter;
-import simplesoul.autumnboot.rest.common.logging.WarningCounter;
+import simplesoul.autumnboot.common.logging.ErrorCounter;
+import simplesoul.autumnboot.common.logging.WarningCounter;
 import simplesoul.autumnboot.rest.entity.HealthStatus;
 
 /**

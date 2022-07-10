@@ -1,4 +1,4 @@
-package simplesoul.autumnboot.rest.common.logging;
+package simplesoul.autumnboot.common.logging;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

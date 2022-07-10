@@ -1,6 +1,6 @@
 package simplesoul.autumnboot.rest.common.validator.oneof;
 
-import simplesoul.autumnboot.rest.common.reflection.Singleton;
+import simplesoul.autumnboot.common.reflection.Singleton;
 import simplesoul.autumnboot.rest.common.validator.AbstractConstraintsProvider;
 
 import java.util.Set;

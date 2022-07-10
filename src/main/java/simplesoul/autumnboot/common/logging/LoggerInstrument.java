@@ -1,4 +1,4 @@
-package simplesoul.autumnboot.rest.common.logging;
+package simplesoul.autumnboot.common.logging;
 
 import ch.qos.logback.classic.Logger;
 import com.sun.jdi.connect.IllegalConnectorArgumentsException;

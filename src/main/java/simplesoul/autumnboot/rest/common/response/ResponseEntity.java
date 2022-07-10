@@ -2,15 +2,12 @@ package simplesoul.autumnboot.rest.common.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import simplesoul.autumnboot.common.cache.PrimeCache;
 import simplesoul.autumnboot.rest.common.exception.AbstractBusinessException;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * 带响应实体的接口正常返回
@@ -97,10 +94,7 @@ public final class ResponseEntity<T> extends AbstractSuccessResponse {
     public static final class Failure extends AbstractFailureResponse {
 
         @JsonIgnore
-        private static final Cache<Integer, Failure> FAILURE_CACHE = Caffeine.newBuilder()
-                .expireAfterAccess(1, TimeUnit.HOURS)
-                .maximumSize(32)
-                .build();
+        private static final PrimeCache<Integer, Failure> FAILURE_CACHE = new PrimeCache<>(Failure::new);
 
         /**
          * 状态码
@@ -133,7 +127,7 @@ public final class ResponseEntity<T> extends AbstractSuccessResponse {
         }
 
         public static Failure getInstance(int errorCode) {
-            return FAILURE_CACHE.get(errorCode, Failure::new);
+            return FAILURE_CACHE.getOrElseUpsert(errorCode);
         }
     }
 
