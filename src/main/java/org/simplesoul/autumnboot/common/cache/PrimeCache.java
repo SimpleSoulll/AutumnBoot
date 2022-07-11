@@ -1,4 +1,4 @@
-package org.simplesoul.autumnboot.rest.common.cache;
+package org.simplesoul.autumnboot.common.cache;
 
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

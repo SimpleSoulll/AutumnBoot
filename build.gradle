@@ -2,12 +2,10 @@ plugins {
     id 'org.springframework.boot' version '2.7.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'distribution'
     id 'base'
 }
 
 group = 'org.simplesoul'
-// JDK版本
 sourceCompatibility = '17'
 
 ext {
@@ -37,23 +35,15 @@ dependencies {
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.springframework.boot:spring-boot-configuration-processor'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }
-
-distributions {
-    custom {
-    }
-    main {
-        distributionBaseName = "x"
-        contents {
-            from project.configurations.runtimeClasspath
-        }
-    }
-}
-
 
 tasks.named('test') {
+    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000'
+    jvmArgs '--enable-preview'
     useJUnitPlatform()
 }
 

@@ -1,4 +1,4 @@
-package org.simplesoul.autumnboot.rest.common.reflection;
+package org.simplesoul.autumnboot.common.reflection;
 
 /**
  * @author AC

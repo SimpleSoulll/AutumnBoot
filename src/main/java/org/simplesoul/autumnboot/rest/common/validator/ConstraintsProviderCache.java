@@ -1,6 +1,6 @@
 package org.simplesoul.autumnboot.rest.common.validator;
 
-import org.simplesoul.autumnboot.rest.common.reflection.CachedReflectionFactory;
+import org.simplesoul.autumnboot.common.reflection.CachedReflectionFactory;
 
 /**
  * 缓存ConstraintsProvider对象

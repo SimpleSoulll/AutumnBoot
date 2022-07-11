@@ -1,10 +1,10 @@
 package org.simplesoul.autumnboot.rest.controller;
 
 import org.simplesoul.autumnboot.rest.common.response.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.simplesoul.autumnboot.rest.entity.HealthStatus;
 import org.simplesoul.autumnboot.rest.service.health.HealthCheckService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 服务状态相关接口

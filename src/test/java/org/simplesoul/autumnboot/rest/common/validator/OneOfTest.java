@@ -6,15 +6,16 @@ import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.simplesoul.autumnboot.rest.common.validator.oneof.AbstractOneOfDynamicConstraintsProvider;
 import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOf;
 import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOfIntegers;
 import org.simplesoul.autumnboot.rest.common.validator.oneof.OneOfStrings;
+import org.springframework.validation.beanvalidation.CustomValidatorBean;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -23,11 +24,9 @@ import java.util.stream.Collectors;
 /**
  * @author AC
  */
-@SpringBootTest
 public class OneOfTest {
 
-    @Autowired
-    private Validator validator;
+    private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     /**
      * @see OneOfStrings
@@ -35,6 +34,7 @@ public class OneOfTest {
     @Test
     @DisplayName("测试静态OneOf注解")
     void staticOneOfTest() {
+        new CustomValidatorBean();
         var person = new Person("icy", 28);
         var validateResult = validator.validate(person);
         Set<String> messages = validateResult.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
@@ -57,6 +57,7 @@ public class OneOfTest {
         Programmer programmer = new Programmer("linux", new Language("ASM"));
         var validateResult = validator.validate(programmer);
         Set<String> messages = validateResult.stream().map(ConstraintViolation::getMessage).collect(Collectors.toSet());
+        Assertions.assertEquals(messages, Set.of("OneOfTest.Language(name=ASM)不在{OneOfTest.Language(name=C#),OneOfTest.Language(name=C++),OneOfTest.Language(name=Java)}中"));
     }
 
     private static record Programmer(String name, @OneOf(constraintsProvider = MajorLanguage.class) Language language) {

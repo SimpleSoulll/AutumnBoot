@@ -2,6 +2,7 @@ package org.simplesoul.autumnboot.rest.common.exception;
 
 import lombok.Getter;
 import org.simplesoul.autumnboot.rest.common.docs.errorcodes.CustomExceptionScanner;
+
 import org.simplesoul.autumnboot.rest.common.docs.errorcodes.ErrorCode;
 
 import java.util.Objects;
